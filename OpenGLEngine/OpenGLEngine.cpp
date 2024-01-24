@@ -2,27 +2,18 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-
 using namespace std;
 
 void processInput(GLFWwindow*);
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
 void error_callback(int error, const char* msg) {
     cerr << " [" << error << "] " << msg << endl;
 }
-
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\n\0";
 
 int main() {
 
@@ -30,10 +21,9 @@ int main() {
 
     // Initialize GLFW
     if (!glfwInit()) { // Exit, if it failed
-        std::cout << "Failed to init GLFW" << std::endl;
+        cout << "Failed to init GLFW" << endl;
         return -1;
     }
-
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -42,9 +32,9 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    //Request window from operating system
-    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
+    // Request Window from Operating System
+    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", nullptr, nullptr);
+    if (window == nullptr)
     {
         cout << "Failed to create GLFW window" << endl;
         glfwTerminate();
@@ -52,108 +42,152 @@ int main() {
     }
     glfwMakeContextCurrent(window);
 
-    //Initiate GLAD
+    // Initialize GLAD (connects OpenGL Functions)
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         cout << "Failed to initialize GLAD" << endl;
+        glfwTerminate();
         return -1;
     }
-    glViewport(0, 0, 800, 600);
-
-    // build and compile our shader program
-    // ------------------------------------
-    // vertex shader
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    // check for shader compile errors
-    int success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-    // fragment shader
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    // check for shader compile errors
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-    // link shaders
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    // check for linking errors
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-    }
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    glViewport(0, 0, width, height);
 
     // Initialization ends here
-    // =============================================================
-    // Here we get to the good shit
+    // ==================================================================
+    // The Real Program starts here
+    float red = 0;
 
+    // ----- Create Vertex Array Object, which makes changing between VBOs easier -----
+    unsigned int playerMesh;
+    glGenVertexArrays(1, &playerMesh);
+    glBindVertexArray(playerMesh);
 
+    // ----- Create Array Buffer on the GPU and copy our vertices to GPU -------
     float vertices[] = {
-         -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f, 0.5f, 0.0f
+       -1.0f, -0.5f, 0.0f,
+        0.0f, -0.5f, 0.0f,
+       -0.5f,  0.5f, 0.0f
     };
+    unsigned int VBO; // variable to store buffer id
+    glGenBuffers(1, &VBO); // ask open gl to create a buffer
+    glBindBuffer(GL_ARRAY_BUFFER, VBO); // tell gl to use this buffer
+    glBufferData(GL_ARRAY_BUFFER, // copy our vertices to the buffer
+        sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+    // ------ configure vertex attribute(s) (currently it's just one, the position) -----
+    // so the vertex shader understands, where to find the input attributes, in this case position
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    
 
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // ----- Create Vertex Array Object, which makes changing between VBOs easier -----
+    unsigned int enemyMesh;
+    glGenVertexArrays(1, &enemyMesh);
+    glBindVertexArray(enemyMesh);
 
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray(0);
+    // ----- Create Array Buffer on the GPU and copy our vertices to GPU -------
+    float vertices2[] = {
+        0.0f, -0.5f, 0.0f,
+        1.0f, -0.5f, 0.0f,
+        0.5f,  0.5f, 0.0f
+    };
+    unsigned int VBO2; // variable to store buffer id
+    glGenBuffers(1, &VBO2); // ask open gl to create a buffer
+    glBindBuffer(GL_ARRAY_BUFFER, VBO2); // tell gl to use this buffer
+    glBufferData(GL_ARRAY_BUFFER, // copy our vertices to the buffer
+        sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+
+    // ------ configure vertex attribute(s) (currently it's just one, the position) -----
+    // so the vertex shader understands, where to find the input attributes, in this case position
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // ----- Compile the Vertex Shader on the GPU -------
+
+    const char* vertexShaderSource = "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "}\0";
+    unsigned int vertexShader;
+    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    // ------ Compile the Orange Fragment Shader on the GPU --------
+    const char* orangeFragmentShaderSource = "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main()\n"
+        "{\n"
+        "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "} \0";
+    unsigned int orangeFragmentShader;
+    orangeFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(orangeFragmentShader, 1, &orangeFragmentShaderSource, NULL);
+    glCompileShader(orangeFragmentShader);
+
+    // ------ Compile the Yellow Fragment Shader on the GPU --------
+    const char* yellowFragmentShaderSource = "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main()\n"
+        "{\n"
+        "    FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
+        "} \0";
+    unsigned int yellowFragmentShader;
+    yellowFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(yellowFragmentShader, 1, &yellowFragmentShaderSource, NULL);
+    glCompileShader(yellowFragmentShader);
+
+    // -------- Create Orange Shader Program (Render Pipeline) ---------
+    unsigned int orangeShaderProgram;
+    orangeShaderProgram = glCreateProgram();
+    glAttachShader(orangeShaderProgram, vertexShader);
+    glAttachShader(orangeShaderProgram, orangeFragmentShader);
+    glLinkProgram(orangeShaderProgram);
+
+    // -------- Create Yellow Shader Program (Render Pipeline) ---------
+    unsigned int yellowShaderProgram;
+    yellowShaderProgram = glCreateProgram();
+    glAttachShader(yellowShaderProgram, vertexShader);
+    glAttachShader(yellowShaderProgram, yellowFragmentShader);
+    glLinkProgram(yellowShaderProgram);
+
+    // clean up shaders after they've been linked into a program
+    glDeleteShader(vertexShader);
+    glDeleteShader(orangeFragmentShader);
+    glDeleteShader(yellowFragmentShader);
 
 
-    //While the User doesn't want to Quit (x Button, Alt F4)
+
+    // While the User doesn't want to Quit (X Button, Alt+F4)
     while (!glfwWindowShouldClose(window))
     {
-        //process input (e.g. close window on Esc)
+        // process input (e.g. close window on Esc)
         glfwPollEvents();
         processInput(window);
+        red += 0.001f;
+        if (red > 1)
+            red -= 1;
 
-        //render (paint the current frame of the game)
-        glClearColor(0.2f, 0.5f, 0.75f, 0.2f);
+        // render (paint the current frame of the game)
+        glClearColor(red, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //draw our first triangle
-        glUseProgram(shaderProgram);
-        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+        glUseProgram(orangeShaderProgram);
+        glBindVertexArray(playerMesh);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        //present (send the current frame to the omputer screen)
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+        glUseProgram(yellowShaderProgram);
+        glBindVertexArray(enemyMesh);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
+        // present (send the current frame to the computer screen)
+        glfwSwapBuffers(window); // ??
+    }
+    // Cleans up all the GLFW stuff
     glfwTerminate();
     return 0;
 }
