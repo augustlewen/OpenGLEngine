@@ -74,6 +74,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)ext\glfw-3.3.9.bin.WIN64\include;$(SolutionDir)ext\glad\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)ext\glfw-3.3.9.bin.WIN64\lib-vc2022;$(LibraryPath)</LibraryPath>
+    <AllProjectIncludesArePublic>false</AllProjectIncludesArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -147,6 +148,10 @@
   <ItemGroup>
     <ClCompile Include="..\ext\glad\src\glad.c" />
     <ClCompile Include="OpenGLEngine.cpp" />
+    <ClCompile Include="Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
