@@ -21,7 +21,7 @@ void error_callback(int error, const char* msg) {
 
 int main() {
 
-    Window mainWindow{800, 600};
+    Window window{800, 600};
 
     // Initialization ends here
     // ==================================================================
@@ -132,11 +132,12 @@ int main() {
 
 
     // While the User doesn't want to Quit (X Button, Alt+F4)
-    while (!glfwWindowShouldClose(mainWindow.window))
+    while (!window.shouldClose())
     {
         // process input (e.g. close window on Esc)
         glfwPollEvents();
-        processInput(mainWindow.window);
+        window.processInput();
+
         red += 0.001f;
         if (red > 1)
             red -= 1;
@@ -154,16 +155,9 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // present (send the current frame to the computer screen)
-        glfwSwapBuffers(mainWindow.window); // ??
+        window.SwapBuffers(); // ??
     }
     // Cleans up all the GLFW stuff
     glfwTerminate();
     return 0;
 }
-
-void processInput(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
-
