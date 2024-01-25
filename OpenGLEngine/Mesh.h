@@ -8,6 +8,11 @@ class Mesh
     size_t vertexCount;
 
 public:
+    void Render()
+    {
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+    }
 	Mesh(float* vertices, size_t count)
 	{
         vertexCount = count / 3;
@@ -29,11 +34,7 @@ public:
         glEnableVertexAttribArray(0);
 	}
 
-    void Render()
-    {
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-    }
+   
 
 };
 
