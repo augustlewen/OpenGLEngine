@@ -75,12 +75,21 @@ public:
 
     void processInput()
     {
+        glfwPollEvents();
+
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
     }
 
-    void SwapBuffers()
+    void Present()
     {
         glfwSwapBuffers(window);
+    }
+
+    void Clear()
+    {
+        // render (paint the current frame of the game)
+        glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 };
