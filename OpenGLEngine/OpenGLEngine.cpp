@@ -29,18 +29,18 @@ int main() {
     Window window{800, 600};
 
     float vertices[]{
-           -1.0f, -0.5f, 0.0f,
+           -0.9f, -0.5f, 0.0f,
             0.0f, -0.5f, 0.0f,
            -0.5f,  0.5f, 0.0f,
-           -1.0f, -0.5f, 0.0f,
+           -0.9f, -0.5f, 0.0f,
            -0.5f,  0.5f, 0.0f,
-           -1.0f, 0.5f, 0.0f
+           -0.9f, 0.5f, 0.0f
     };
 
     float vertices2[] = {
-           -1.0f, -0.5f, 0.0f,
+            0.25f, -0.5f, 0.0f,
             0.0f, -0.5f, 0.0f,
-           -0.5f,  0.5f, 0.0f
+            0.25f,  0.5f, 0.0f
     };
 
     Mesh mesh1{vertices, size(vertices)};
@@ -50,11 +50,11 @@ int main() {
     // ----- Compile the Vertex Shader on the GPU -------
 
     Shader vertexShader{"#version 330 core\n"
-        "out vec4 FragColor;\n"
+        "layout (location = 0) in vec3 aPos;\n"
         "void main()\n"
         "{\n"
-        "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        "} \0", GL_VERTEX_SHADER};
+        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "}\0", GL_VERTEX_SHADER};
 
     Shader orangeShader{ "#version 330 core\n"
         "out vec4 FragColor;\n"
@@ -75,7 +75,7 @@ int main() {
     Material yellow{ vertexShader, yellowShader };
 
     Triangle a{&orange, &mesh1};
-    Triangle b{&orange, &mesh2};
+    Triangle b{&yellow, &mesh2};
 
 
     // While the User doesn't want to Quit (X Button, Alt+F4)

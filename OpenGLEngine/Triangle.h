@@ -10,10 +10,10 @@ class Triangle
 	Material* material;
 
 public:
-	Triangle(Material* material, Mesh* mesh)
+	Triangle(Material* _material, Mesh* _mesh)
 	{
-		this->mesh = mesh;
-		this->material = material;
+		mesh = _mesh;
+		material = _material;
 	}
 	void Render()
 	{
