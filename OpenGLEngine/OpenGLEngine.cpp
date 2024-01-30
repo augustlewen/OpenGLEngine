@@ -29,22 +29,28 @@ int main() {
     Window window{800, 600};
 
     float vertices[]{
-           -0.9f, -1.0f, 0.0f,
-           -1.0f, 1.0f, 0.0f,
-           1.0f,  1.0f, 0.0f,
-           -0.9f, -0.5f, 0.0f,
-           -0.5f,  0.5f, 0.0f,
-           -0.9f, 0.5f, 0.0f
+           -1.0f, -1.0f, 0.0f,
+           -0.0f, -1.0f, 0.0f,
+           -1.0f,  1.0f, 0.0f,
     };
 
     float vertices2[] = {
-            0.25f, -0.5f, 0.0f,
-            0.0f, -0.5f, 0.0f,
-            0.25f,  0.5f, 0.0f
+            1.0f, 1.0f, 0.0f,
+            1.0f,  -1.0f, 0.0f,
+            0.0f,  -1.0f, 0.0f,
+
+    };
+    float vertices3[] = {
+            0.8f, 1.0f, 0.0f,
+            -0.8f,  1.0f, 0.0f,
+            0.0f,  -0.7f, 0.0f,
+
     };
 
     Mesh mesh1{vertices, size(vertices)};
     Mesh mesh2{vertices2, size(vertices2)};
+    Mesh mesh3{ vertices3, size(vertices3) };
+
   
 
     // ----- Compile the Vertex Shader on the GPU -------
@@ -52,13 +58,24 @@ int main() {
     Shader vertexShader{"vertexShader.glsl", GL_VERTEX_SHADER};
     Shader orangeShader{"orangeFragmentShader.glsl", GL_FRAGMENT_SHADER};
     Shader yellowShader{"yellowFragmentShader.glsl", GL_FRAGMENT_SHADER};
+    Shader rainbowShader{"rainbowFragmentShader.glsl", GL_FRAGMENT_SHADER };
+    Shader rgbShader{ "rgbShader.glsl", GL_FRAGMENT_SHADER };
 
 
     Material orange{ vertexShader, orangeShader };
     Material yellow{ vertexShader, yellowShader };
+    Material rainbow{ vertexShader, rainbowShader };
+    Material rgb{ vertexShader, rgbShader };
 
-    Triangle a{&orange, &mesh1};
-    Triangle b{&yellow, &mesh2};
+    Triangle a{&rgb, &mesh1};
+    a.red = 1; a.green = 0; a.red = 0;
+
+    Triangle b{&rgb, &mesh2};
+    b.red = 0; b.green = 1; b.red = 0;
+
+    Triangle c{ &rgb, &mesh3};
+    b.red = 0; b.green = 1; b.red = 0;
+
 
 
     // While the User doesn't want to Quit (X Button, Alt+F4)
@@ -70,6 +87,8 @@ int main() {
 
         a.Render();
         b.Render();
+        c.Render();
+
 
         // present (send the current frame to the computer screen)
         window.Present();

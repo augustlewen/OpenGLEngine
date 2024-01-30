@@ -65,6 +65,5 @@ public:
     {
         glDeleteShader(shaderId);
     }
-    
 };
 

@@ -163,6 +163,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="orangeFragmentShader.glsl" />
+    <None Include="rainbowFragmentShader.glsl" />
+    <None Include="rgbShader.glsl" />
     <None Include="vertexShader.glsl" />
     <None Include="yellowFragmentShader.glsl" />
   </ItemGroup>

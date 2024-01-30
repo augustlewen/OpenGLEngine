@@ -89,7 +89,7 @@ public:
     void Clear()
     {
         // render (paint the current frame of the game)
-        glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
     }
 };
