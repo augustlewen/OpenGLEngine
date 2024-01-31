@@ -6,10 +6,15 @@ struct Vector3 {
     float x, y, z;
 };
 
+struct Vector2 {
+    float x, y;
+};
+
 struct Colour {
     static const Colour red;
     static const Colour green;
     static const Colour blue;
+    static const Colour yellow;
 
     float r, g, b, a;
 };
@@ -18,6 +23,7 @@ struct Colour {
 struct Vertex {
     Vector3 pos;
     Colour col{ 1, 1, 1, 1 };
+    Vector2 uv;
 };
 
 class Mesh
@@ -30,6 +36,7 @@ public:
     void Render() {
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+
     }
 
     Mesh(Vertex* vertices, size_t count) {
@@ -47,5 +54,9 @@ public:
 
         glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, col));
         glEnableVertexAttribArray(1);
+
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8* sizeof(Vertex), (void*)offsetof(Vertex, uv));
+        glEnableVertexAttribArray(2);
+
     }
 };

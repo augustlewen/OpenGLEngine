@@ -63,5 +63,6 @@
     <None Include="yellowFragmentShader.glsl" />
     <None Include="rainbowFragmentShader.glsl" />
     <None Include="rgbShader.glsl" />
+    <None Include="textureFragmentShader.glsl" />
   </ItemGroup>
 </Project>

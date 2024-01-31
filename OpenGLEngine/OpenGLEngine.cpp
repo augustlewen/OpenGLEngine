@@ -6,7 +6,7 @@
 #include "Shader.h"
 #include "Material.h"
 #include "Triangle.h"
-
+#include "stb_image.h"
 
 using namespace std;
 
@@ -28,6 +28,16 @@ int main() {
 
     Window window{800, 600};
 
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+
+    unsigned int textureId;
+    glGenTextures(1, &textureId);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    stbi_image_free(data);
+
     /*float vertices[]{
            -1.0f, -1.0f, 0.0f,
            -0.0f, -1.0f, 0.0f,
@@ -48,6 +58,16 @@ int main() {
 
     Mesh mesh3{ vertices3, size(vertices3) };
 
+    Vertex vertices4[] = {
+        // positions                            // colors           // texture coords
+        Vertex{Vector3{0.5f,  0.5f, 0.0f},      Colour::red,        Vector2{1.0f, 1.0f}},   // top right
+        Vertex{Vector3{0.5f, -0.5f, 0.0f},      Colour::green,      Vector2{1.0f, 0.0f}},   // bottom right
+        Vertex{Vector3{-0.5f, -0.5f, 0.0f},     Colour::blue,       Vector2{0.0f, 0.0f}},   // bottom left
+        Vertex{Vector3{-0.5f,  0.5f, 0.0f},     Colour::yellow,     Vector2{0.0f, 1.0f}}    // top left 
+    };
+
+    Mesh mesh4{vertices4, size(vertices4)};
+
     /*Mesh mesh1{vertices, size(vertices)};
     Mesh mesh2{vertices2, size(vertices2)};*/
   
@@ -59,12 +79,14 @@ int main() {
     Shader yellowShader{"yellowFragmentShader.glsl", GL_FRAGMENT_SHADER};
     Shader rainbowShader{"rainbowFragmentShader.glsl", GL_FRAGMENT_SHADER };
     Shader rgbShader{ "rgbShader.glsl", GL_FRAGMENT_SHADER };
+    Shader textureShader{ "textureFragmentShader.glsl", GL_FRAGMENT_SHADER };
 
 
     Material orange{ vertexShader, orangeShader };
     Material yellow{ vertexShader, yellowShader };
     Material rainbow{ vertexShader, rainbowShader };
     Material rgb{ vertexShader, rgbShader };
+    Material textured{ vertexShader, textureShader };
 
     /*Triangle a{&rgb, &mesh1};
     a.red = 1; a.green = 0; a.red = 0;
@@ -73,6 +95,8 @@ int main() {
     b.red = 0; b.green = 1; b.red = 0;*/
 
     Triangle c{ &rgb, &mesh3};
+    Triangle d{ &textured, &mesh4};
+
     c.blue = 1.0;
     c.red = 0.4f;
     c.green = 0.2f;
@@ -90,6 +114,7 @@ int main() {
         /*a.Render();
         b.Render();*/
         c.Render();
+        d.Render();
 
 
         // present (send the current frame to the computer screen)
