@@ -1,6 +1,24 @@
 #pragma once
-
+#include <cstddef>
 #include "glad/glad.h"
+
+struct Vector3 {
+    float x, y, z;
+};
+
+struct Colour {
+    static const Colour red;
+    static const Colour green;
+    static const Colour blue;
+
+    float r, g, b, a;
+};
+
+
+struct Vertex {
+    Vector3 pos;
+    Colour col{ 1, 1, 1, 1 };
+};
 
 class Mesh
 {
@@ -8,33 +26,26 @@ class Mesh
     size_t vertexCount;
 
 public:
-    void Render()
-    {
+
+    void Render() {
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     }
-	Mesh(float* vertices, size_t count)
-	{
-        vertexCount = count / 3;
-        // ----- Create Vertex Array Object, which makes changing between VBOs easier -----
+
+    Mesh(Vertex* vertices, size_t count) {
+        vertexCount = count;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
 
-        // ----- Create Array Buffer on the GPU and copy our vertices to GPU -------
-        
-        unsigned int VBO; // variable to store buffer id
-        glGenBuffers(1, &VBO); // ask open gl to create a buffer
-        glBindBuffer(GL_ARRAY_BUFFER, VBO); // tell gl to use this buffer
-        glBufferData(GL_ARRAY_BUFFER, // copy our vertices to the buffer
-            sizeof(float) * count, vertices, GL_STATIC_DRAW);
+        unsigned int VBO;
+        glGenBuffers(1, &VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * count, vertices, GL_STATIC_DRAW);
 
-        // ------ configure vertex attribute(s) (currently it's just one, the position) -----
-        // so the vertex shader understands, where to find the input attributes, in this case position
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, pos));
         glEnableVertexAttribArray(0);
-	}
 
-   
-
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, col));
+        glEnableVertexAttribArray(1);
+    }
 };
-

@@ -28,7 +28,7 @@ int main() {
 
     Window window{800, 600};
 
-    float vertices[]{
+    /*float vertices[]{
            -1.0f, -1.0f, 0.0f,
            -0.0f, -1.0f, 0.0f,
            -1.0f,  1.0f, 0.0f,
@@ -39,18 +39,17 @@ int main() {
             1.0f,  -1.0f, 0.0f,
             0.0f,  -1.0f, 0.0f,
 
+    };*/
+    Vertex vertices3[] = {
+        Vertex{Vector3{0.5f, -0.5f, 0.0f}, Colour::red},
+        Vertex{Vector3{-0.5f, -0.5f, 0.0}, Colour::green},
+        Vertex{Vector3{0.0f,  0.5f, 0.0f}, Colour::blue}
     };
-    float vertices3[] = {
-            0.8f, 1.0f, 0.0f,
-            -0.8f,  1.0f, 0.0f,
-            0.0f,  -0.7f, 0.0f,
 
-    };
-
-    Mesh mesh1{vertices, size(vertices)};
-    Mesh mesh2{vertices2, size(vertices2)};
     Mesh mesh3{ vertices3, size(vertices3) };
 
+    /*Mesh mesh1{vertices, size(vertices)};
+    Mesh mesh2{vertices2, size(vertices2)};*/
   
 
     // ----- Compile the Vertex Shader on the GPU -------
@@ -67,14 +66,13 @@ int main() {
     Material rainbow{ vertexShader, rainbowShader };
     Material rgb{ vertexShader, rgbShader };
 
-    Triangle a{&rgb, &mesh1};
+    /*Triangle a{&rgb, &mesh1};
     a.red = 1; a.green = 0; a.red = 0;
 
     Triangle b{&rgb, &mesh2};
-    b.red = 0; b.green = 1; b.red = 0;
+    b.red = 0; b.green = 1; b.red = 0;*/
 
     Triangle c{ &rgb, &mesh3};
-    b.red = 0; b.green = 1; b.red = 0;
 
 
 
@@ -85,8 +83,8 @@ int main() {
         window.processInput();
         window.Clear();
 
-        a.Render();
-        b.Render();
+        /*a.Render();
+        b.Render();*/
         c.Render();
 
 

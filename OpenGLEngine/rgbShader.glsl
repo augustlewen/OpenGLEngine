@@ -1,12 +1,8 @@
 #version 330 core
 out vec4 FragColor;
+in vec4 vertexColour;
   
-uniform float red;
-uniform float green;
-uniform float blue;
-
-
 void main()
 {
-    FragColor = vec4(red, green, blue, 1.0);
-} 
+    FragColor = vertexColour;
+}
