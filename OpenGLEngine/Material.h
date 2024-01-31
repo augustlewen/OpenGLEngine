@@ -6,9 +6,9 @@
 
 class Material
 {
-    unsigned int shaderProgram;
 
 public:
+    unsigned int shaderProgram;
 	Material(Shader& vertexShader, Shader& fragmentShader)
 	{
         // -------- Create Orange Shader Program (Render Pipeline) ---------

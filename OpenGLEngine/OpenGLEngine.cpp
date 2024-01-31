@@ -73,7 +73,11 @@ int main() {
     b.red = 0; b.green = 1; b.red = 0;*/
 
     Triangle c{ &rgb, &mesh3};
-
+    c.blue = 1.0;
+    c.red = 0.4f;
+    c.green = 0.2f;
+    c.offsetX = 0.5f;
+    c.offsetY = 0.5f;
 
 
     // While the User doesn't want to Quit (X Button, Alt+F4)
