@@ -53,8 +53,8 @@ int main() {
     Material textured{ vertexShader, textureShader };
 
 
-    Triangle c{ &textured, &mesh};
-    Triangle d{ &textured, &mesh};
+    Triangle c{ &textured, &mesh, &container};
+    Triangle d{ &textured, &mesh, &wall};
 
     c.offsetX = -0.5f;
     c.offsetY = -0.25f;
