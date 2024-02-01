@@ -9,9 +9,12 @@ out vec4 vertexColour; // output a color to the fragment shader
 out vec2 texCoord;
 
 
+
 void main()
 {
     gl_Position = vec4(aPos.x + offset.x, aPos.y + offset.y, aPos.z, 1.0);
     vertexColour = aCol; // set ourColor to the input color we got from the vertex data
-    texCoord = aTexCoord;
+    texCoord = vec2(aPos.x + offset.x, aPos.y + offset.y);
+//    texCoord = aTexCoord;
+
 } 

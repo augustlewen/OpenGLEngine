@@ -73,6 +73,7 @@ int main() {
     
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+
     // While the User doesn't want to Quit (X Button, Alt+F4)
     while (!window.shouldClose())
     {
@@ -82,6 +83,8 @@ int main() {
         float timeValue = glfwGetTime();
         float time = (sin(timeValue) / 2.0f);
         d.offsetY = time;
+        d.offsetX = time;
+
         d.Render();
 
 
