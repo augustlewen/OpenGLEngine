@@ -38,71 +38,40 @@ int main() {
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(data);
 
-    /*float vertices[]{
-           -1.0f, -1.0f, 0.0f,
-           -0.0f, -1.0f, 0.0f,
-           -1.0f,  1.0f, 0.0f,
-    };
-
-    float vertices2[] = {
-            1.0f, 1.0f, 0.0f,
-            1.0f,  -1.0f, 0.0f,
-            0.0f,  -1.0f, 0.0f,
-
-    };*/
-    Vertex vertices3[] = {
-        Vertex{Vector3{0.5f, -0.5f, 0.0f}, Colour::red},
-        Vertex{Vector3{-0.5f, -0.5f, 0.0}, Colour::green},
-        Vertex{Vector3{0.0f,  0.5f, 0.0f}, Colour::blue}
-    };
-
-    Mesh mesh3{ vertices3, size(vertices3) };
+ 
 
     Vertex vertices4[] = {
         // positions                            // colors           // texture coords
         Vertex{Vector3{0.5f,  0.5f, 0.0f},      Colour::red,        Vector2{1.0f, 1.0f}},   // top right
         Vertex{Vector3{0.5f, -0.5f, 0.0f},      Colour::green,      Vector2{1.0f, 0.0f}},   // bottom right
         Vertex{Vector3{-0.5f, -0.5f, 0.0f},     Colour::blue,       Vector2{0.0f, 0.0f}},   // bottom left
-        Vertex{Vector3{-0.5f,  0.5f, 0.0f},     Colour::yellow,     Vector2{0.0f, 1.0f}}    // top left 
+
+        Vertex{Vector3{-0.5f, 0.5f, 0.0f},     Colour::yellow,     Vector2{0.0f, 1.0f}},    // top left 
+        Vertex{Vector3{0.5f,  0.5f, 0.0f},      Colour::red,        Vector2{1.0f, 1.0f}},   // top right
+        Vertex{Vector3{-0.5f, -0.5f, 0.0f},     Colour::blue,       Vector2{0.0f, 0.0f}},   // bottom left
     };
 
     Mesh mesh4{vertices4, size(vertices4)};
 
-    /*Mesh mesh1{vertices, size(vertices)};
-    Mesh mesh2{vertices2, size(vertices2)};*/
-  
+
 
     // ----- Compile the Vertex Shader on the GPU -------
 
     Shader vertexShader{"vertexShader.glsl", GL_VERTEX_SHADER};
-    Shader orangeShader{"orangeFragmentShader.glsl", GL_FRAGMENT_SHADER};
-    Shader yellowShader{"yellowFragmentShader.glsl", GL_FRAGMENT_SHADER};
+
     Shader rainbowShader{"rainbowFragmentShader.glsl", GL_FRAGMENT_SHADER };
     Shader rgbShader{ "rgbShader.glsl", GL_FRAGMENT_SHADER };
     Shader textureShader{ "textureFragmentShader.glsl", GL_FRAGMENT_SHADER };
 
 
-    Material orange{ vertexShader, orangeShader };
-    Material yellow{ vertexShader, yellowShader };
     Material rainbow{ vertexShader, rainbowShader };
     Material rgb{ vertexShader, rgbShader };
     Material textured{ vertexShader, textureShader };
 
-    /*Triangle a{&rgb, &mesh1};
-    a.red = 1; a.green = 0; a.red = 0;
 
-    Triangle b{&rgb, &mesh2};
-    b.red = 0; b.green = 1; b.red = 0;*/
-
-    Triangle c{ &rgb, &mesh3};
     Triangle d{ &textured, &mesh4};
-
-    c.blue = 1.0;
-    c.red = 0.4f;
-    c.green = 0.2f;
-    c.offsetX = 0.5f;
-    c.offsetY = 0.5f;
-
+    
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // While the User doesn't want to Quit (X Button, Alt+F4)
     while (!window.shouldClose())
@@ -110,10 +79,9 @@ int main() {
         // process input (e.g. close window on Esc)
         window.processInput();
         window.Clear();
-
-        /*a.Render();
-        b.Render();*/
-        c.Render();
+        float timeValue = glfwGetTime();
+        float time = (sin(timeValue) / 2.0f);
+        d.offsetY = time;
         d.Render();
 
 
