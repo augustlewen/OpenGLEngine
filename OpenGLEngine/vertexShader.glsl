@@ -14,7 +14,7 @@ void main()
 {
     gl_Position = vec4(aPos.x + offset.x, aPos.y + offset.y, aPos.z, 1.0);
     vertexColour = aCol; // set ourColor to the input color we got from the vertex data
-    texCoord = vec2(aPos.x + offset.x, aPos.y + offset.y);
+    texCoord = vec2(aTexCoord.x + offset.x, aTexCoord.y + offset.y);
 //    texCoord = aTexCoord;
 
 } 

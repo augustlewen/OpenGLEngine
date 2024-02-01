@@ -7,40 +7,24 @@
 #include "Material.h"
 #include "Triangle.h"
 #include "stb_image.h"
+#include "Texture.h"
+
 
 using namespace std;
 
 
 void processInput(GLFWwindow*);
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
-void error_callback(int error, const char* msg) {
-    cerr << " [" << error << "] " << msg << endl;
-}
-
-
-
 int main() {
 
     Window window{800, 600};
 
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
 
-    unsigned int textureId;
-    glGenTextures(1, &textureId);
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(data);
+    Texture container{ "container.jpg", GL_TEXTURE0 };
+    Texture wall{ "wall.jpg", GL_TEXTURE1};
 
- 
 
-    Vertex vertices4[] = {
+    Vertex vertices[] = {
         // positions                            // colors           // texture coords
         Vertex{Vector3{0.5f,  0.5f, 0.0f},      Colour::red,        Vector2{1.0f, 1.0f}},   // top right
         Vertex{Vector3{0.5f, -0.5f, 0.0f},      Colour::green,      Vector2{1.0f, 0.0f}},   // bottom right
@@ -51,7 +35,7 @@ int main() {
         Vertex{Vector3{-0.5f, -0.5f, 0.0f},     Colour::blue,       Vector2{0.0f, 0.0f}},   // bottom left
     };
 
-    Mesh mesh4{vertices4, size(vertices4)};
+    Mesh mesh{vertices, size(vertices)};
 
 
 
@@ -69,8 +53,15 @@ int main() {
     Material textured{ vertexShader, textureShader };
 
 
-    Triangle d{ &textured, &mesh4};
-    
+    Triangle c{ &textured, &mesh};
+    Triangle d{ &textured, &mesh};
+
+    c.offsetX = -0.5f;
+    c.offsetY = -0.25f;
+
+    d.offsetX = 0.5f;
+    d.offsetY = 0.25f;
+
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
@@ -80,11 +71,12 @@ int main() {
         // process input (e.g. close window on Esc)
         window.processInput();
         window.Clear();
-        float timeValue = glfwGetTime();
+
+        /*float timeValue = glfwGetTime();
         float time = (sin(timeValue) / 2.0f);
         d.offsetY = time;
-        d.offsetX = time;
-
+        d.offsetX = time;*/
+        c.Render();
         d.Render();
 
 
