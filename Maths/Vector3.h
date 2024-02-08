@@ -42,4 +42,12 @@ public:
     Vector3 Normalize() const {
         return Vector3(x, y, z) / Magnitude();
     }
+
+    float SquareMagnitude() const {
+        return sqrt(sqrt(x * x + y * y + z * z));
+    }
+
+    static float DotProduct(Vector3 vec1, Vector3 vec2) {
+        return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
+    }
 };

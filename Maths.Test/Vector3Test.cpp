@@ -57,5 +57,9 @@ TEST(Vector3_Normalize, Returns_Normalize_For_Vectors) {
 }
 
 TEST(Vector3_SqrtMagnitude, Returns_Sqrt_Magnitude_For_Vectors) {
-    EXPECT_FLOAT_EQ(sqrt(Vector3(5, -3, 2).Magnitude()), sqrt(sqrt(38)));
+    EXPECT_FLOAT_EQ(Vector3(5, -3, 2).SquareMagnitude(), sqrt(sqrt(38)));
+}
+
+TEST(Vector3_DotProduct, Returns_DotProduct_For_2_Vectors) {
+    EXPECT_FLOAT_EQ(Vector3::DotProduct(Vector3(1, 1, 1), Vector3(5, 5, 5)), 15);
 }
