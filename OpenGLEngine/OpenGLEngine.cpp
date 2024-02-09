@@ -56,14 +56,12 @@ int main() {
     Triangle c{ &textured, &mesh, &container};
     Triangle d{ &textured, &mesh, &wall};
 
-    c.offsetX = -0.5f;
-    c.offsetY = -0.25f;
+    c.offset = Vector3{ 0.4, 0.25, 0};
+    d.offset = Vector3{ -0.2, -0.25, 0 };
 
-    d.offsetX = 0.5f;
-    d.offsetY = 0.25f;
+    c.scale = Vector3{1.75, 0.5, 1};
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 
     // While the User doesn't want to Quit (X Button, Alt+F4)
     while (!window.shouldClose())
@@ -72,12 +70,12 @@ int main() {
         window.processInput();
         window.Clear();
 
-        /*float timeValue = glfwGetTime();
-        float time = (sin(timeValue) / 2.0f);
-        d.offsetY = time;
-        d.offsetX = time;*/
+        float timeValue = glfwGetTime();
+        c.rotation = Vector3{ 0, 0, timeValue};
+        d.rotation = Vector3{ 0, timeValue, 0};
         c.Render();
         d.Render();
+
 
 
         // present (send the current frame to the computer screen)

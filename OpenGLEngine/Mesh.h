@@ -1,10 +1,10 @@
 #pragma once
 #include <cstddef>
 #include "glad/glad.h"
-
-struct Vector3 {
-    float x, y, z;
-};
+#include "../Maths/Vector3.h"
+//struct Vector3 {
+//    float x, y, z;
+//};
 
 struct Vector2 {
     float x, y;
