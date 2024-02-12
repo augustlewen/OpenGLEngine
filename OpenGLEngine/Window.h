@@ -24,7 +24,7 @@ public:
     // we introduced a bool to show whether creating the window
     // was successful or not
     bool success{};
-    Window(int width, int height) {
+    Window(int width, int height) { // Start (Awake)
         glfwSetErrorCallback(error_callback);
 
         // Initialize GLFW
@@ -41,7 +41,7 @@ public:
 #endif
 
         // Request Window from Operating System
-        // And assign it to public class variable, so it can 
+        // And assign it to public class variable, so it can
         // be accessed from the outside
         window = glfwCreateWindow(800, 600,
             "LearnOpenGL", nullptr, nullptr);
@@ -64,6 +64,7 @@ public:
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
+        glEnable(GL_DEPTH_TEST);
 
         // Initialization ends here
         success = true; // We set success to be true
@@ -73,23 +74,19 @@ public:
         return glfwWindowShouldClose(this->window);
     }
 
+    void present() {
+        glfwSwapBuffers(window);
+    }
+
     void processInput()
     {
         glfwPollEvents();
-
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
     }
 
-    void Present()
-    {
-        glfwSwapBuffers(window);
-    }
-
-    void Clear()
-    {
-        // render (paint the current frame of the game)
-        glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+    void clear() {
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 };

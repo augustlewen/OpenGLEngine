@@ -5,81 +5,58 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Material.h"
-#include "Triangle.h"
+#include "GameObject.h"
 #include "stb_image.h"
 #include "Texture.h"
-
+#include <vector>
 
 using namespace std;
-
 
 void processInput(GLFWwindow*);
 
 int main() {
 
-    Window window{800, 600};
-
+    Window window{ 800,600 }; // GLFW, GLAD, glViewport
 
     Texture container{ "container.jpg", GL_TEXTURE0 };
-    Texture wall{ "wall.jpg", GL_TEXTURE1};
+    Texture wall{ "wall.jpg", GL_TEXTURE1 };
+    Texture face{ "awesomeface.png", GL_TEXTURE0 };
 
-
-    Vertex vertices[] = {
-        // positions                            // colors           // texture coords
-        Vertex{Vector3{0.5f,  0.5f, 0.0f},      Colour::red,        Vector2{1.0f, 1.0f}},   // top right
-        Vertex{Vector3{0.5f, -0.5f, 0.0f},      Colour::green,      Vector2{1.0f, 0.0f}},   // bottom right
-        Vertex{Vector3{-0.5f, -0.5f, 0.0f},     Colour::blue,       Vector2{0.0f, 0.0f}},   // bottom left
-
-        Vertex{Vector3{-0.5f, 0.5f, 0.0f},     Colour::yellow,     Vector2{0.0f, 1.0f}},    // top left 
-        Vertex{Vector3{0.5f,  0.5f, 0.0f},      Colour::red,        Vector2{1.0f, 1.0f}},   // top right
-        Vertex{Vector3{-0.5f, -0.5f, 0.0f},     Colour::blue,       Vector2{0.0f, 0.0f}},   // bottom left
-    };
-
-    Mesh mesh{vertices, size(vertices)};
-
-
-
-    // ----- Compile the Vertex Shader on the GPU -------
-
-    Shader vertexShader{"vertexShader.glsl", GL_VERTEX_SHADER};
-
-    Shader rainbowShader{"rainbowFragmentShader.glsl", GL_FRAGMENT_SHADER };
-    Shader rgbShader{ "rgbShader.glsl", GL_FRAGMENT_SHADER };
+    Shader vertexShader{ "vertexShader.glsl", GL_VERTEX_SHADER };
+    Shader orangeShader{ "orangeFragmentShader.glsl", GL_FRAGMENT_SHADER };
     Shader textureShader{ "textureFragmentShader.glsl", GL_FRAGMENT_SHADER };
 
-
-    Material rainbow{ vertexShader, rainbowShader };
-    Material rgb{ vertexShader, rgbShader };
+    // -------- Create Orange Shader Program (Render Pipeline) ---------
+    Material orange{ vertexShader, orangeShader };
     Material textured{ vertexShader, textureShader };
 
+    GameObject cube{ &textured, Mesh::createCube(), &wall };
 
-    Triangle c{ &textured, &mesh, &container};
-    Triangle d{ &textured, &mesh, &wall};
 
-    c.offset = Vector3{ 0.4, 0.25, 0};
-    d.offset = Vector3{ -0.2, -0.25, 0 };
+   /* Vector3 cubePositions[] = {
+        
+    }
 
-    c.scale = Vector3{1.75, 0.5, 1};
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    vector<GameObject*> gameobjects{};
+    for (size_t i = 0; i < size(cubePositions); i++)
+    {
+
+    }*/
 
     // While the User doesn't want to Quit (X Button, Alt+F4)
-    while (!window.shouldClose())
+    while (!window.shouldClose()) // window -> window.window
     {
-        // process input (e.g. close window on Esc)
         window.processInput();
-        window.Clear();
 
-        float timeValue = glfwGetTime();
-        c.rotation = Vector3{ 0, 0, timeValue};
-        d.rotation = Vector3{ 0, timeValue, 0};
-        c.Render();
-        d.Render();
+        window.clear();
 
+        cube.rotation.x = glfwGetTime();
+        cube.rotation.y = glfwGetTime() * 0.8f;
+        cube.rotation.z = glfwGetTime() * 0.6f;
+        cube.render();
 
-
-        // present (send the current frame to the computer screen)
-        window.Present();
+        window.present();
     }
     // Cleans up all the GLFW stuff
     glfwTerminate();

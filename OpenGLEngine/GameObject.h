@@ -5,9 +5,9 @@
 #include "Texture.h"
 #include "../Maths/Matrix4x4.h"
 
-class Triangle
+class GameObject
 {
-	Mesh* mesh;
+	const Mesh* mesh;
 	Material* material;
 	Texture* texture;
 
@@ -17,13 +17,13 @@ public:
 	Vector3 offset{0, 0, 0};
 	Vector3 rotation{ 0, 0, 0 };
 	Vector3 scale{ 1, 1, 1};
-	Triangle(Material* _material, Mesh* _mesh, Texture* _texture = nullptr)
+	GameObject(Material* _material, const Mesh* _mesh, Texture* _texture = nullptr)
 	{
 		mesh = _mesh;
 		material = _material;
 		texture = _texture;
 	}
-	void Render()
+	void render()
 	{
 		material->use();
 
@@ -55,7 +55,7 @@ public:
 
 		
 
-		mesh->Render();
+		mesh->render();
 	}
 	
 };
