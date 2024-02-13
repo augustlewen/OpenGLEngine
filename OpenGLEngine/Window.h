@@ -13,6 +13,8 @@ class Window
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
+        glEnable(GL_DEPTH_TEST);
+
     }
 
     static void error_callback(int error, const char* msg) {
@@ -63,8 +65,8 @@ public:
         }
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
         glfwGetFramebufferSize(window, &width, &height);
-        glViewport(0, 0, width, height);
-        glEnable(GL_DEPTH_TEST);
+        // glViewport(0, 0, width, height);
+        // glEnable(GL_DEPTH_TEST);
 
         // Initialization ends here
         success = true; // We set success to be true
@@ -87,6 +89,7 @@ public:
 
     void clear() {
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 };

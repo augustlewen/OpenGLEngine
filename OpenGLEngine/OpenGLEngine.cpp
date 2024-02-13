@@ -33,16 +33,25 @@ int main() {
     GameObject cube{ &textured, Mesh::createCube(), &wall };
 
 
-   /* Vector3 cubePositions[] = {
-        
-    }
+    Vector3 cubePositions[] = {
+        Vector3(1.3f, -2.0f, -0.1f),
+        Vector3(0.8f, -0.1f, -0.5f),
+        Vector3(-0.2f, -0.5f, -0.8f),
+        Vector3(-1.3f, 0.5f, 0.2f),
+        Vector3(-1.8f, -2.0f, 1.5f),
+        Vector3(2.3f, 2.0f, -0.5f),
+    };
 
 
-    vector<GameObject*> gameobjects{};
-    for (size_t i = 0; i < size(cubePositions); i++)
-    {
-
-    }*/
+  vector<GameObject*> gameObjects{};
+  for (size_t i = 0; i < size(cubePositions); i++)
+  {
+      GameObject* newCube = new GameObject{ &textured, Mesh::createCube(), &wall};
+      newCube->rotation.z = i * 0.1f;
+      newCube->rotation.x = i * 0.1f + 0.5f;
+      newCube->position = cubePositions[i];
+      gameObjects.push_back(newCube);
+  }
 
     // While the User doesn't want to Quit (X Button, Alt+F4)
     while (!window.shouldClose()) // window -> window.window
@@ -51,10 +60,18 @@ int main() {
 
         window.clear();
 
-        cube.rotation.x = glfwGetTime();
-        cube.rotation.y = glfwGetTime() * 0.8f;
-        cube.rotation.z = glfwGetTime() * 0.6f;
-        cube.render();
+        // cube.rotation.x = glfwGetTime();
+        // cube.rotation.y = glfwGetTime() * 0.8f;
+        // cube.rotation.z = glfwGetTime() * 0.6f;
+        // cube.render();
+
+        for (size_t i = 0; i < size(cubePositions); i++)
+        {
+            gameObjects[i]->render();
+            gameObjects[i]->rotation.x = glfwGetTime();
+            gameObjects[i]->rotation.y = glfwGetTime() * 0.4f;
+
+        }
 
         window.present();
     }

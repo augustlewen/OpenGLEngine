@@ -14,7 +14,7 @@ class GameObject
 public:
 	float red, green, blue;
 	float offsetX, offsetY, offsetZ;
-	Vector3 offset{0, 0, 0};
+	Vector3 position{0, 0, 0};
 	Vector3 rotation{ 0, 0, 0 };
 	Vector3 scale{ 1, 1, 1};
 	GameObject(Material* _material, const Mesh* _mesh, Texture* _texture = nullptr)
@@ -34,14 +34,14 @@ public:
 
 
 		double pi = 2 * acos(0.0);
-		Matrix4x4 transformMatrix = Matrix4x4::Translation(offset);
+		Matrix4x4 positionMatrix = Matrix4x4::Translation(position);
 		Matrix4x4 rotationMatrix = Matrix4x4::Rotation(rotation * pi / 2);
 		Matrix4x4 scaleMatrix = Matrix4x4::Scale(scale);
 
-		Matrix4x4 matrix = transformMatrix * rotationMatrix * scaleMatrix;
+		Matrix4x4 transformMatrix = positionMatrix * rotationMatrix * scaleMatrix;
 
 		unsigned int transformLoc = glGetUniformLocation(material->shaderProgram, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_TRUE, &matrix.m11);
+		glUniformMatrix4fv(transformLoc, 1, GL_TRUE, &transformMatrix.m11);
 
 
 
