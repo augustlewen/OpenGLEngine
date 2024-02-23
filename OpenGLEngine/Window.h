@@ -6,23 +6,54 @@
 
 using namespace std;
 
+enum KeyCode
+{
+    W,
+    A,
+    S,
+    D
+};
+
+
+
 class Window
 {
+    int width, height;
     // We made these method static to make them compatible
     // With the GLFW Callbacks (because they don't support this->)
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
-        glEnable(GL_DEPTH_TEST);
-
     }
 
     static void error_callback(int error, const char* msg) {
         cerr << " [" << error << "] " << msg << endl;
     }
+
+    int getGlfwKeyCode(KeyCode keyCode)
+    {
+        switch(keyCode)
+        {
+            case W: return GLFW_KEY_W;
+            case A: return GLFW_KEY_A;
+            case S: return GLFW_KEY_S;
+            case D: return GLFW_KEY_D;
+        }
+    }
+    
     GLFWwindow* window;
 
 public:
+    int getWidth()
+    {
+        glfwGetFramebufferSize(window, &width, &height);
+        return width;
+    }
+    int getHeight()
+    {
+        glfwGetFramebufferSize(window, &width, &height);
+        return height;
+    }
     // we introduced a bool to show whether creating the window
     // was successful or not
     bool success{};
@@ -65,8 +96,8 @@ public:
         }
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
         glfwGetFramebufferSize(window, &width, &height);
-        // glViewport(0, 0, width, height);
-        // glEnable(GL_DEPTH_TEST);
+        glViewport(0, 0, width, height);
+        glEnable(GL_DEPTH_TEST);
 
         // Initialization ends here
         success = true; // We set success to be true
@@ -91,5 +122,11 @@ public:
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+
+    bool getKeyDown(KeyCode keyCode)
+    {
+        return glfwGetKey(window, getGlfwKeyCode(keyCode)) == GLFW_PRESS;
     }
 };

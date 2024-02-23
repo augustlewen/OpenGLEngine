@@ -1,3 +1,4 @@
+#include <complex>
 #include <iostream>
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -43,15 +44,17 @@ int main() {
     };
 
 
-  vector<GameObject*> gameObjects{};
-  for (size_t i = 0; i < size(cubePositions); i++)
-  {
+    vector<GameObject*> gameObjects{};
+    for (size_t i = 0; i < size(cubePositions); i++)
+    {
       GameObject* newCube = new GameObject{ &textured, Mesh::createCube(), &wall};
       newCube->rotation.z = i * 0.1f;
       newCube->rotation.x = i * 0.1f + 0.5f;
       newCube->position = cubePositions[i];
       gameObjects.push_back(newCube);
-  }
+    }
+
+    Camera camera{&window};
 
     // While the User doesn't want to Quit (X Button, Alt+F4)
     while (!window.shouldClose()) // window -> window.window
@@ -60,14 +63,11 @@ int main() {
 
         window.clear();
 
-        // cube.rotation.x = glfwGetTime();
-        // cube.rotation.y = glfwGetTime() * 0.8f;
-        // cube.rotation.z = glfwGetTime() * 0.6f;
-        // cube.render();
+        camera.position.z = (sin(glfwGetTime())+2) * 3;
 
         for (size_t i = 0; i < size(cubePositions); i++)
         {
-            gameObjects[i]->render();
+            gameObjects[i]->render(&camera);
             gameObjects[i]->rotation.x = glfwGetTime();
             gameObjects[i]->rotation.y = glfwGetTime() * 0.4f;
 
